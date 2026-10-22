@@ -28,6 +28,8 @@ This sets up the full stack: Django (Web + Worker), PostgreSQL, Redis, and Rabbi
 
 2.  **Access the API:**
     The Event Intake API will be available at `http://localhost:8000/api/events/`.
+3.  **Authenticate OKR service events:**
+    Set `OKR_NOTIFICATION_SHARED_SECRET` to the same randomly generated 32+ character secret configured as `NOTIFICATION_SERVICE_SHARED_SECRET` in the OKR backend. Requests must include an HMAC-SHA256 signature in `X-OKR-Signature` and a Unix timestamp in `X-OKR-Timestamp`; requests older than five minutes are rejected. In production, set `DEBUG=0`, a strong `DJANGO_SECRET_KEY`, and explicit `ALLOWED_HOSTS`. Never use the example secret in production.
 
 3.  **Check Logs:**
     To see the processing flow (Intake -> Celery Worker -> Delivery), verify the logs:
@@ -111,6 +113,10 @@ To deploy this system to a production environment (e.g., AWS, GCP, DigitalOcean)
     ```bash
     python manage.py runserver
     ```
+## Tests
+
+Run the signed-event intake security tests with `python manage.py test event_intake` after installing dependencies and configuring a local test database.
+
 ## Documentation
 
 The API documentation is available at `http://localhost:8000/swagger/`. 
