@@ -49,7 +49,9 @@ class EventIntakeView(APIView):
             return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
         serializer = EventSerializer(data=request.data)
         if serializer.is_valid():
-            event_data = serializer.validated_data
+            event_data = dict(serializer.validated_data)
+            if event_data.get('timestamp') is not None:
+                event_data['timestamp'] = event_data['timestamp'].isoformat()
             publish_event.delay(event_data)
             logger.info("Event received and queued: %s", event_data["event_type"])
             return Response({"status": "accepted", "message": "Event queued for processing"}, status=status.HTTP_202_ACCEPTED)
