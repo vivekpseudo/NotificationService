@@ -51,7 +51,7 @@ class SlackService(BaseChannelService):
             method="POST",
         )
         try:
-            with urlopen(request, timeout=8) as response:
+            with build_opener(NoRedirectHandler()).open(request, timeout=8) as response:
                 result = json.loads(response.read(65536).decode("utf-8"))
             if result.get("ok") is not True:
                 logger.error("Slack delivery failed: %s", result.get("error", "provider rejected request"))
