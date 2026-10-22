@@ -30,6 +30,8 @@ if not SECRET_KEY:
         SECRET_KEY = 'development-only-not-for-production'
     else:
         raise ImproperlyConfigured('DJANGO_SECRET_KEY must be set when DEBUG is disabled')
+if not DEBUG and (len(SECRET_KEY) < 50 or 'local-dev' in SECRET_KEY or 'replace-with' in SECRET_KEY):
+    raise ImproperlyConfigured('DJANGO_SECRET_KEY must be a unique random secret of at least 50 characters in production')
 
 ALLOWED_HOSTS = [
     host.strip()
