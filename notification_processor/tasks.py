@@ -17,7 +17,11 @@ def process_event(self, event_data):
     
     # 1. Generate Notification Content
     # In a real system, this might involve template rendering based on event_type
-    notification_content = f"New event: {event_data.get('event_type')} with payload {event_data.get('payload')}"
+    payload = event_data.get('payload') or {}
+    notification_content = str(payload.get('message') or f"New event: {event_data.get('event_type')}")
+    app_url = payload.get('app_url')
+    if app_url:
+        notification_content += f"\\nOpen OKR: {app_url}"
     
     # 2. Forward to Router
     # We could call route_notification directly or as a separate task for more granularity
