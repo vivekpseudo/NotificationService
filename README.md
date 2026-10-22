@@ -121,3 +121,11 @@ create superuser:
 ```bash
 python manage.py createsuperuser
 ```
+
+## OKR API integration and secure delivery
+
+Set `OKR_NOTIFICATION_SHARED_SECRET` to the same random secret configured as `NOTIFICATION_SERVICE_SHARED_SECRET` in the OKR backend. The event intake endpoint validates `X-OKR-Timestamp` and `X-OKR-Signature` (HMAC-SHA256 over `timestamp + "." + raw request body`) and rejects requests older than five minutes. In production, a missing secret causes the intake endpoint to reject events. Do not expose this service publicly; use private networking and HTTPS.
+
+For Slack delivery, set `SLACK_BOT_TOKEN` in the worker environment and configure each user's Slack destination as a channel ID (for example, `C012ABCDEF`). Grant the bot only the `chat:write` scope and invite it to the destination channel. For Microsoft Teams, configure the user preference destination as an HTTPS Teams Workflow/webhook URL on an approved Microsoft webhook host. Redirects are disabled to reduce SSRF risk. Credentials and webhook URLs must be treated as secrets; do not log them or commit them to Git.
+
+Email and in-app adapters intentionally return failure until a real provider and persistence layer are configured. Do not advertise those channels as production-ready yet. For production deployment, replace Django's development server with a production WSGI/ASGI server, remove default database credentials, set `DEBUG=0`, and provision durable broker, monitoring, TLS, and retry/dead-letter policies.
