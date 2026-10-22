@@ -16,7 +16,9 @@ services:
       - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
       - DATABASE_URL=postgres://postgres:postgres@db:5432/notification_db
-      - DEBUG=1
+      - DEBUG=${DEBUG:-1}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-local-dev-only-change-me}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1,web}
       - OKR_NOTIFICATION_SHARED_SECRET=${OKR_NOTIFICATION_SHARED_SECRET:-}
       - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN:-}
 
@@ -33,6 +35,9 @@ services:
       - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
       - DATABASE_URL=postgres://postgres:postgres@db:5432/notification_db
+      - DEBUG=${DEBUG:-1}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-local-dev-only-change-me}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1,web}
       - OKR_NOTIFICATION_SHARED_SECRET=${OKR_NOTIFICATION_SHARED_SECRET:-}
       - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN:-}
 
