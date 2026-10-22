@@ -21,7 +21,7 @@ def process_event(self, event_data):
     notification_content = str(payload.get('message') or f"New event: {event_data.get('event_type')}")
     app_url = payload.get('app_url')
     if app_url:
-        notification_content += f"\\nOpen OKR: {app_url}"
+        notification_content += f"\nOpen OKR: {app_url}"
     
     # 2. Forward to Router
     # We could call route_notification directly or as a separate task for more granularity
