@@ -4,9 +4,14 @@ import os
 import re
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
-from urllib.request import Request, urlopen
+from urllib.request import HTTPRedirectHandler, Request, build_opener, urlopen
 
 logger = logging.getLogger(__name__)
+
+
+class NoRedirectHandler(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
 
 
 class BaseChannelService:
@@ -91,7 +96,7 @@ class TeamsService(BaseChannelService):
         )
         try:
             # Redirects are not followed: a webhook cannot redirect this server to another host.
-            with urlopen(request, timeout=8) as response:
+            with build_opener(NoRedirectHandler()).open(request, timeout=8) as response:
                 return 200 <= response.status < 300
         except (HTTPError, URLError, TimeoutError, ValueError) as exc:
             logger.error("Teams delivery failed (%s)", type(exc).__name__)
