@@ -9,6 +9,7 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 
 from .serializers import EventSerializer
 from .tasks import publish_event
@@ -38,6 +39,10 @@ def verify_okr_signature(request):
 
 
 class EventIntakeView(APIView):
+    # HMAC is the authentication mechanism for this service-to-service endpoint.
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
     def post(self, request):
         if not verify_okr_signature(request):
             logger.warning("Rejected event intake: missing or invalid service signature")
